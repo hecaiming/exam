@@ -37,7 +37,7 @@ route.get('/getAllTopics',(req,resp)=>{
 
 //显示题型
 route.post('/getAllSubjects',(req,resp)=>{
-    // console.log(req.body);
+    console.log(req.body);
     var queryInfo=req.body;
     var subjectType_id=queryInfo['subject.subjectType.id'];
     var subjectLevel_id=queryInfo['subject.subjectLevel.id'];
@@ -74,5 +74,19 @@ route.post('/choiceSubject',(req,resp)=>{
     }).catch((error)=>{
         resp.send(error);
     });
+});
+
+route.post('/saveSubject',(req,resp)=>{
+    var queryInfo=req.body;
+    var subjectType_id=queryInfo['subject.subjectType.id'];
+    var subjectLevel_id=queryInfo['subject.subjectLevel.id'];
+    var department_id=queryInfo['subject.department.id'];
+    var topic_id=queryInfo['subject.topic.id'];
+    var stem=queryInfo.stem;
+    var analysis=queryInfo.analysis;
+    var answer=queryInfo.answer;
+    var choiceContents = queryInfo['choiceContents[]'];
+	var choiceCorrect = queryInfo['choiceCorrect[]'];
 })
+
 module.exports=route;

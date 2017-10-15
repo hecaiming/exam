@@ -37,15 +37,16 @@
                         </div>
                         </div>
                         <div class="Catalog_rightnei" hidden="hidden">
-                            <div class="Catalogtitwo">题号：25544&nbsp;&nbsp;题型：还是得&nbsp;&nbsp;难度：订餐&nbsp;&nbsp;上传人：女性司机&nbsp;&nbsp;来源：才能使得&nbsp;&nbsp;上传时间:220255&nbsp;&nbsp;组卷次数：<em>0</em></div>
+                            <div class="Catalogtitwo">题号：25544&nbsp;&nbsp;题型：还是得&nbsp;&nbsp;难度：订餐&nbsp;&nbsp;
+                                上传人：女性司机&nbsp;&nbsp;来源：才能使得&nbsp;&nbsp;上传时间:220255&nbsp;&nbsp;组卷次数：<em>0</em></div>
                             <div class="Catalogcontent">
                                 <div class="Catalogcontentup">题型</div>
+                                <div class="Catalogcontentcenter" hidden></div>
                                 
                                 <div class="Catalogcontentdown">
                                     <a href="javascript:void(0)">审核通过</a>
-                                    <a href="javascript:void(0)">加入试卷</a> 
-                                    <a href="javascript:void(0)">审核不通过</a> 
-                                    
+                                    <a href="javascript:void(0)">审核不通过</a>
+                                    <a href="javascript:void(0)" style="display:none">加入试卷</a>  
                                 </div>
                             </div>
                         </div>
@@ -56,6 +57,9 @@
 </div>
 
 <script type="text/javascript">
+        $(".c_condition .icon_add").click(function(){
+			$(".right").load("load/addSubject.html");
+        })
     $(function(){
             //获取类型数据
 		 	  $.getJSON("exam/manager/getAllSubjectType",function(
@@ -168,15 +172,14 @@
                     "subject.subjectType.id":type,
                     "subject.subjectLevel.id":level,
 					"subject.department.id":direct,
-					"subject.topic.id":topic,
+                    "subject.topic.id":topic,
 					},
 					success:function(data){
                         showDate(data);
 				}		
             })
         })
-        
-        //点击显示题型
+              
         function showDate(data){
                $(".Catalogtitle").find("em").html(data.length);
                $(".Catalog_rightnei:not(:hidden)").remove();
@@ -186,10 +189,22 @@
                     // console.log(div);
                     div.removeAttr("hidden");
                     $(".Catalog_right").append(div);
+                    //显示题型
                     var stemOne=$("<p id='"+item.id+"'>"+item.stem+"</p>");
                     // console.log(stemOne);
                     div.find(".Catalogcontentup").append(stemOne);
-    
+
+                    //显示答案和解析
+                        
+                    if(item.subjectType_id==3){
+                        var answer=$("<p id='"+item.id+"'>答案:"+item.answer+"</p>");
+                        div.find(".Catalogcontentcenter").append(answer);
+                        var analy=$("<p id='"+item.id+"'>解析:"+item.analysis+"</p>");
+                        div.find(".Catalogcontentcenter").append(analy);
+                    }else{
+                       var analy=$("<p id='"+item.id+"'>解析:"+item.analysis+"</p>");
+                        div.find(".Catalogcontentcenter").append(analy);
+                    }  
                })
                 //显示选项
                     $.ajax("exam/manager/choiceSubject",{
@@ -219,27 +234,36 @@
                 switch($(this).html()){
                     case "审核通过":
                     $.post("exam/manager/checkSubject",{
-                        
+            
                             "subject_id":$(this).parent().prev().children().attr("id"),
                             "subject_checkState":"通过"
                             })
-                       $(this).show().css("color","#ccc");
-                       $(this).siblings("a:last").hide()
-                                        
+
+                        $(this).hide();
+                        alert("审核已通过")
+                        $(this).next().hide();
+                        $(this).siblings("a:last").show();                  
                     break;
                     case "审核不通过":
                     $.post("exam/manager/checkSubject",{
                         "subject_id":$(this).parent().prev().children().attr("id"),
                         "subject_checkState":"不通过"
                     })
-                       $(this).show().css("color","#ccc");
-                       $(this).prev().hide();
+                        alert("审核不通过");
+                        $(this).css("background","#ccc");
+                        $(this).siblings("a:last").hide(); 
                     break;
-                      
-               
                 };
-               
+                              
             })
-        };    
+        };
+        //显示答案和解析
+        $(".Catalogtitle").find("input:checkbox").on("click",function(){
+          if(this.checked){
+              $(".Catalogcontentcenter").show();
+          }else{
+              $(".Catalogcontentcenter").hide();
+          }
+        });
     })   
 </script>
